@@ -1,27 +1,34 @@
-# Create a VPC
-resource "aws_vpc" "my-vpc" {
-  cidr_block = "10.0.0.0/16"
-  tags = {
-    Name = "Demo VPC"
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.3.0"
+    }
   }
+
+ # required_version = ">= 1.0.0"
 }
 
-# Create Web Public Subnet
-resource "aws_subnet" "web-subnet-1" {
-  vpc_id                  = aws_vpc.my-vpc.id
-  cidr_block              = "10.0.1.0/24"
-  availability_zone       = "us-east-1a"
-  map_public_ip_on_launch = true
+provider "aws" {
+  profile = var.aws_profile
+  region  = var.aws_region
+}
 
-  tags = {
-    Name = "Web-1a"
-  }
+# Used to get access to the effective account and user that Terraform
+data "aws_caller_identity" "current" {}
+
+#create private key which can be use login to webserver 
+resource "tls_private_key" "Web-Key" {
+  algorithm = "RSA"
 }
-resource "aws_instance" "web" {
-  instance_type = var.instance_type
-  ami           = var.aws_ec2_ami
-  subnet_id = aws_subnet.web-subnet-1.id
-  tags = {
-    "Name" = "aws-ec2-demo"
-  }
+#save public key from geneterted key
+resource "aws_key_pair" "App_instance-Key" {
+  key_name   = "Web-Key"
+  public_key = tls_private_key.Web-Key.public_key_openssh
 }
+#save to key to your local system
+resource "local_file" "Web-Key" {
+  content  = tls_private_key.Web-Key.private_key_pem
+  filename = "Web-Key.pem"
+}
+
