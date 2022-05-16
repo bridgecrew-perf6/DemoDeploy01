@@ -1,50 +1,8 @@
-terraform {
-  required_providers {
-    aws = {
-      source = "hashicorp/aws"
-      Version = "~>3.27"
-    }
+resource "aws_instance" "web" {
+  instance_type = var.instance_type
+  ami           = var.aws_ec2_ami
+
+  tags = {
+    "Name" = "aws-ec2-demo"
   }
-
-  required_version = ">=0.14.9"
-
-}
-
-required_version = ">=0.14.9" 
-
-   backend "s3" {
-       bucket = "[Remote_State_S3_Bucket_Name]"
-       key    = "[Remote_State_S3_Bucket_Key]"
-       region = "east-us-1"
-   }
-
-provider "aws" {
-  version = "~>3.0"
-  region  = "east-us-1"
-}
-
-resource "aws_s3_bucket" "s3Bucket" {
-     bucket = "[terrafstate]"
-     acl       = "public-read"
-
-     policy  = <<EOF
-{
-     "id" : "MakePublic",
-   "version" : "2012-10-17",
-   "statement" : [
-      {
-         "action" : [
-             "s3:GetObject"
-          ],
-         "effect" : "Allow",
-         "resource" : "arn:aws:s3:::[terrafstate]/*",
-         "principal" : "*"
-      }
-    ]
-  }
-EOF
-
-   website {
-       index_document = "index.html"
-   }
 }
