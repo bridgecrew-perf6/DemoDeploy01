@@ -20,8 +20,7 @@ resource "aws_subnet" "web-subnet-1" {
 resource "aws_instance" "web" {
   instance_type = var.instance_type
   ami           = var.aws_ec2_ami
-  vpc_id        = aws_vpc.my-vpc.id
-subnet_id = aws_subnet.web-subnet-1.id
+  subnet_id = aws_subnet.web-subnet-1.id
   tags = {
     "Name" = "aws-ec2-demo"
   }
