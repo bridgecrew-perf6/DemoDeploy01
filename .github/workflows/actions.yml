@@ -44,7 +44,7 @@ jobs:
       id: fmt
       run: terraform fmt -check
       env:
-        TF_ACTION_WORKING_DIR: \terraform
+        TF_ACTION_WORKING_DIR: /terraform
       continue-on-error: true
 
     - name: Terraform Validate
