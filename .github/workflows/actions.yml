@@ -13,7 +13,7 @@ jobs:
     name: 'TF GitHub Actions Demo'
     runs-on: ubuntu-latest
     environment: production
-
+    working-directory: '.'
     defaults:
       run:
         shell: bash
