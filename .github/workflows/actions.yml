@@ -13,7 +13,6 @@ jobs:
     name: 'TF GitHub Actions Demo'
     runs-on: ubuntu-latest
     environment: production
-    working-directory: /terraform
     defaults:
       run:
         shell: bash
